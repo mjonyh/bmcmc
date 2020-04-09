@@ -42,8 +42,8 @@ model.info(burn=1000)
 model.info(burn=1000,latex=True)
 model.plot(burn=1000)
 model.plot(keys=['mu'],burn=1000)
-print model.chain['mu']
-print model.chain['sigma']
+print(model.chain['mu'])
+print(model.chain['sigma'])
 
 """
 
@@ -77,14 +77,12 @@ def stat_text(x,uplow=False):
     temp=np.percentile(x,[16.0,84.0,50.0])
     sig=(temp[1]-temp[0])/2.0
     xmean=np.mean(x)
-#    sig=np.std(x)
+    #    sig=np.std(x)
     d2=np.floor(np.log10(sig))
     if uplow:
         return r'$%g^{+%g}_{-%g}$'%(np.round(xmean*(10**(-d2)))/10.0**(-d2),np.round((xmean-temp[0])*(10**(-d2)))/10.0**(-d2),np.round((temp[1]-xmean)*(10**(-d2)))/10.0**(-d2))
     else:
         return r'$%g \pm %g$'%(np.round(xmean*(10**(-d2)))/10.0**(-d2),np.round(sig*(10**(-d2)))/10.0**(-d2))
-
-
 
 class Model():
     """
@@ -295,20 +293,21 @@ class Model():
                 s=s+self.descr[key][3]+' & '+stat_text(x,uplow=True)+' \\\ \n'
             s=s+'\hline \n'
             s=s+'\end{tabular} \n'
-            print s
+            print(s)
         else:            
-            print '%4s %16s %12s %12s [%12s, %12s, %12s]'%('no','name','mean','stddev','16%','50%','84%')
+            print('%4s %16s %12s %12s [%12s, %12s, %12s]'%('no','name','mean','stddev','16%','50%','84%'))
             if len(self.names0)>0:
-                print 'Level-0'
+                print('Level-0')
                 for i,name in enumerate(self.names0):
                     x=self.chain[name][burn:]
                     temp=np.percentile(x,[16.0,50.0,84.0])
-                    print '%4i %16s %12g %12g [%12g, %12g, %12g]'%(i,name,np.mean(x),np.std(x),temp[0],temp[1],temp[2])
+                    print('%4i %16s %12g %12g [%12g, %12g, %12g]'%(i,name,np.mean(x),np.std(x),temp[0],temp[1],temp[2]))
 
             if len(self.names1)>0:
-                print 'Level-1'
+                print('Level-1')
                 for i,name in enumerate(self.names1):
-                    print '%4i %16s %12g %12g'%(i,name,np.mean(self.mu[name]),np.mean(self.sigma[name]))
+                    print('%4i %16s %12g %12g'%(i,name,np.mean(self.mu[name]),np.mean(self.sigma[name])))
+
 
     def write(self,outname):
         ebf.initialize(outname)
@@ -351,8 +350,8 @@ class Model():
                     plt.subplot(len(keys),len(keys),k)
                     #sig=np.std(self.chain[keys[i]][burn:])
                     xmean=np.mean(x)
-                    nbins=np.max([20,x.size/1000])
-                    plt.hist(x,bins=nbins,normed=True,histtype='step')
+                    nbins=np.max([20,x.size/1000]).astype(int)
+                    plt.hist(x,bins=nbins,density=True,histtype='step')
                     plt.axvline(np.mean(self.chain[keys[i]][burn:]),lw=2.0,color='g')
                     if i == (len(keys)-1):
                         plt.xlabel(self.descr[keys[i]][3])
@@ -451,7 +450,7 @@ class _MWG():
 
         self.i=self.i+1
         gamma=(1.0/self.i)
-#        y=self.chain
+        #        y=self.chain
         self.alpha=self.alpha*(1-gamma)+alpha*gamma
         self.mu=self.mu*(1-gamma)+self.chain*gamma
         self.x2=self.x2*(1-gamma)+(self.chain*self.chain)*gamma
@@ -500,11 +499,11 @@ class _MWG():
                     lambda
         Second line: name,mean,stddev               
         """
-        print '%-4s %10i %6.3f %6.3f %6.3f'%('MWG',self.i,self.alpha0,np.mean(self.alpha),np.mean(self.lam))
+        print('%-4s %10i %6.3f %6.3f %6.3f'%('MWG',self.i,self.alpha0,np.mean(self.alpha),np.mean(self.lam)))
         for i,name in enumerate(self.varnames):
-            print '%16s %12g %12g'%(name, np.mean(self.mu[i]), np.mean(np.sqrt((self.x2[i]-self.mu[i]*self.mu[i]).clip(min=0.0)))) 
+            print('%16s %12g %12g'%(name, np.mean(self.mu[i]), np.mean(np.sqrt((self.x2[i]-self.mu[i]*self.mu[i]).clip(min=0.0)))) )
 
-#        print np.sqrt(self.x2-self.mu*self.mu)
+        #        print np.sqrt(self.x2-self.mu*self.mu)
         # for i,name in enumerate(varnames):
         #     print i, name, mu[i], sig[i] 
 
@@ -513,9 +512,9 @@ class _MWG():
         # sig=np.sqrt(np.max([0.0,np.mean(self.x2-self.mu*self.mu)]))
         # temp=self.x2-self.mu*self.mu
         # temp=np.sqrt(temp.clip(min=0.0))
-        print '%4s %16s %12s %12s'%('no','name','mean','stddev')
+        print('%4s %16s %12s %12s'%('no','name','mean','stddev'))
         for i,name in enumerate(self.varnames):
-            print '%4i %16s %12g %12g'%(i, name, np.mean(self.mu[i]), np.mean(np.sqrt((self.x2[i]-self.mu[i]*self.mu[i]).clip(min=0.0))) )
+            print('%4i %16s %12g %12g'%(i, name, np.mean(self.mu[i]), np.mean(np.sqrt((self.x2[i]-self.mu[i]*self.mu[i]).clip(min=0.0))) ))
 
     def write(self,filename,mode):
         ebf.write(filename,'/mwg/varnames',self.varnames,mode)
@@ -557,7 +556,7 @@ class _MH():
         self.ptime=ptime
         self.lam=0.0
         self.i=0
-#        self.j=1
+        #        self.j=1
         al=[0.0,0.44,0.352,0.316,0.279,0.275,0.266]
         self.alpha0=al[np.min([len(self.chain[0]),6])]
         self.delta=0.65
@@ -617,11 +616,12 @@ class _MH():
                     acceptance for last half, lambda, covariance  
         Second line: name,mean,stddev               
         """
-        print '%-4s %10i %6.3f %6.3f %6.3f %6.3f'%('MH ',self.i,self.alpha0,np.mean(np.array(self.alpha)),np.mean(np.array(self.alpha)[-len(self.alpha)/2:]),self.lam),np.diag(np.exp(self.lam)*self.cov)
+        print('%-4s %10i %6.3f %6.3f %6.3f %6.3f'%('MH ',self.i,self.alpha0,np.mean(np.array(self.alpha)),np.mean(np.array(self.alpha)[- int(len(self.alpha)/2):]),self.lam),np.diag(np.exp(self.lam)*self.cov))
         x=np.array(self.chain)
         ntot=max(x.shape[0],4)
+        print(ntot)
         for i in range(x.shape[1]):
-            print '%16s %12g %12g %12g %12g'%(self.varnames[i],np.mean(x[:,i]),np.std(x[:,i]),np.mean(x[ntot/2:,i]),np.std(x[ntot/2:,i]))
+            print('%16s %12g %12g %12g %12g'%(self.varnames[i],np.mean(x[:,i]),np.std(x[:,i]),np.mean(x[int(ntot/2):,i]),np.std(x[int(ntot/2):,i])))
 
     def get_chain(self,burn=0,thin=1):
         """
@@ -659,14 +659,14 @@ class _MH():
         cols=2
         chain=np.array(self.chain[burn:])
         nsize=chain.shape[0]
-#        print rows,cols
-        print '%4s %16s %12s %12s [%12s, %12s, %12s]'%('no','name','mean','stddev','16%','50%','84%')
+        #        print rows,cols
+        print('%4s %16s %12s %12s [%12s, %12s, %12s]'%('no','name','mean','stddev','16%','50%','84%'))
         for i,name in enumerate(self.varnames):
             temp=np.percentile(chain[:,i],[16.0,84.0,50.0])
-            print '%4i %16s %12g %12g [%12g, %12g, %12g]'%(i,name,np.mean(chain[:,i]),(temp[1]-temp[0])/2.0,temp[0],temp[2],temp[1])
+            print('%4i %16s %12g %12g [%12g, %12g, %12g]'%(i,name,np.mean(chain[:,i]),(temp[1]-temp[0])/2.0,temp[0],temp[2],temp[1]))
             if plot:
                 ax=plt.subplot(rows,cols,2*i+1) 
-#                plt.text(0.05,0.9,r'$\tau$='+'%5.1f'%(acor.acor(chain[:,i])[0]),transform=ax.transAxes)
+                #                plt.text(0.05,0.9,r'$\tau$='+'%5.1f'%(acor.acor(chain[:,i])[0]),transform=ax.transAxes)
                 plt.plot(chain[:,i])
                 plt.ylabel(self.model.descr[name][3])
                 plt.xlabel('Iteration')

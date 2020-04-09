@@ -44,8 +44,8 @@ if 'gauss1' in ex_names:
     m1.plot(burn=5000)
 
     # print chain values for a few given parameters
-    print m1.chain['mu']
-    print m1.chain['sigma']
+    print(m1.chain['mu'])
+    print(m1.chain['sigma'])
 
     # To print final results as a latex table, discarding the first 5000 iterations.
     m1.info(burn=5000,latex=True)
@@ -88,9 +88,9 @@ if 'gauss2' in ex_names:
     m1.plot(burn=5000)
     #For level-1 parameters only mean and stddev are stored  and made available.
     # print mean value of xt for each data point
-    print m1.mu['xt']
+    print(m1.mu['xt'])
     # print stddev value of xt for each data point
-    print m1.sigma['xt']
+    print(m1.sigma['xt'])
     #plt.savefig('../docs/images/gauss2.png')
 
 
@@ -137,13 +137,13 @@ class stlineb(bmcmc.Model):
         plt.errorbar(self.args['x'][self.ind], self.args['y'][self.ind], yerr=self.args['sigma_y'][self.ind], fmt=".r")
         plt.plot(x,vals[0]*x+vals[1], color="g", lw=2, alpha=0.5)
         for i,key in enumerate(self.names0):
-            print key
+            print(key)
             plt.text(0.5,0.3-i*0.06,self.descr[key][3]+'='+bmcmc.stat_text(self.chain[key][burn:]),transform=plt.gca().transAxes)
 
         vals1=[]
         burn1=chain['m'].size/2
         for i,key in enumerate(['m','c']):
-            print key
+            print(key)
             plt.text(0.05,0.5-i*0.05,self.descr[key][3]+'='+bmcmc.stat_text(chain[key][burn1:]),transform=plt.gca().transAxes)
             vals1.append(np.mean(chain[key][burn1:]))
         plt.plot(x,vals1[0]*x+vals1[1], 'g--', lw=2, alpha=0.5)
